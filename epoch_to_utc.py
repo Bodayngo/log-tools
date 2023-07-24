@@ -31,10 +31,19 @@ def parse_arguments() -> argparse.Namespace:
 
     Returns:
         argparse.Namespace: Parsed arguments object.
+
     """
+    # Create an ArgumentParser object for parsing command-line arguments
     parser = argparse.ArgumentParser(description="Convert epoch timestamps to UTC in a file")
+
+    # Add the 'input_filpath' argument to the parser
     parser.add_argument("input_filepath", help="Path to the file to convert")
-    return parser.parse_args()
+
+    # Parse the command-line argument(s) and store them in the 'args' variable
+    args = parser.parse_args()
+
+    # Return the parsed command-line argument(s)
+    return args
 
 
 def file_exists(file_path: str) -> bool:
@@ -79,20 +88,27 @@ def main():
     """
     try:
         args = parse_arguments()
+
         input_filepath = args.input_filepath
         output_filepath = f"{input_filepath}.utc"
+
         if file_exists(output_filepath):
             print(f"Output filename already exists: {output_filepath}")
             print("Skipping timestamp conversion... (delete conflicting file and run again, if desired)")
+    
         else:
             convert_epoch(input_filepath, output_filepath)
             print(f"Converted file outputed at: '{output_filepath}'")
+
     except FileNotFoundError:
         print(f"Input file not found: '{input_filepath}'", file=sys.stderr)
+
     except PermissionError:
         print("Permission denied. Unable to read or write files.", file=sys.stderr)
+
     except Exception as e:
         print(f"Script error has occurred: {e.__class__.__name__}", file=sys.stderr)
+
     finally:
         print("Script has completed.")
 
